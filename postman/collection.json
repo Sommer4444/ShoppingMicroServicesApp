@@ -1,0 +1,340 @@
+{
+	"info": {
+		"_postman_id": "bbefad20-af97-48f2-ade6-540b253cbedd",
+		"name": "ECommerce Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "58636147",
+		"_collection_link": "https://sommer4444-6127809.postman.co/workspace/Kasper-Sommer's-Workspace~03c26711-3cc1-4e33-8f1b-d69a1ddd5ef5/collection/58636147-bbefad20-af97-48f2-ade6-540b253cbedd?action=share&source=collection_link&creator=58636147"
+	},
+	"item": [
+		{
+			"name": "Users API",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User created successfully\", () => pm.response.to.have.status(201));",
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"userId\", jsonData.id);",
+									"pm.test(\"User ID saved\", () => pm.expect(pm.environment.get(\"userId\")).to.exist);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hanna\",\n  \"email\": \"han@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrlUsers}}/api/users",
+							"host": [
+								"{{baseUrlUsers}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Correct user returned\", () => pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"userId\"))));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlUsers}}/api/users/{{userId}}",
+							"host": [
+								"{{baseUrlUsers}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlUsers}}/api/users",
+							"host": [
+								"{{baseUrlUsers}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments API",
+			"item": [
+				{
+					"name": "Create Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Payment created successfully\", () => pm.response.to.have.status(201));",
+									"const payment = pm.response.json();",
+									"pm.environment.set(\"paymentId\", payment.id);",
+									"pm.test(\"Payment ID saved\", () => pm.expect(pm.environment.get(\"paymentId\")).to.exist);",
+									"pm.test(\"Payment should be successful\", () => pm.expect(payment.status).to.eql(\"Success\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{userId}},\n  \"amount\": 200.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrlPayments}}/api/payments",
+							"host": [
+								"{{baseUrlPayments}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Correct payment returned\", () => pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"paymentId\"))));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlPayments}}/api/payments/{{paymentId}}",
+							"host": [
+								"{{baseUrlPayments}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{paymentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Payments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+									"const payments = pm.response.json();",
+									"const currentId = Number(pm.environment.get(\"paymentId\"));",
+									"const payment = payments.find(p => p.id === currentId) || payments[0];",
+									"pm.test(\"Payment status is Success\", () => pm.expect(payment.status).to.eql(\"Success\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlPayments}}/api/payments",
+							"host": [
+								"{{baseUrlPayments}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders API",
+			"item": [
+				{
+					"name": "Create Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Order created successfully\", () => pm.response.to.have.status(201));",
+									"const order = pm.response.json();",
+									"pm.environment.set(\"orderId\", order.id);",
+									"pm.test(\"Order ID saved\", () => pm.expect(pm.environment.get(\"orderId\")).to.exist);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{userId}},\n  \"paymentId\": {{paymentId}},\n  \"total\": 200.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrlOrders}}/api/orders",
+							"host": [
+								"{{baseUrlOrders}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Correct order returned\", () => pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"orderId\"))));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlOrders}}/api/orders/{{orderId}}",
+							"host": [
+								"{{baseUrlOrders}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlOrders}}/api/orders",
+							"host": [
+								"{{baseUrlOrders}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
